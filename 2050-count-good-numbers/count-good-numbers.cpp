@@ -1,29 +1,22 @@
 class Solution {
 public:
-    const int MOD = 1e9 + 7;
-
-    int countGoodNumbers(long long chakraLength) {
-        long long even = (chakraLength + 1) / 2;
-        long long odd = chakraLength / 2;
-
-        long long evenWays = chakraPower(5, even);
-        long long oddWays = chakraPower(4, odd);
-
-        return (evenWays * oddWays) % MOD;
+    long long powMod(long long base, long long exp, long long mod) {
+    long long result = 1;
+    base %= mod;
+    while (exp > 0) {
+        if (exp % 2 == 1)
+            result = (result * base) % mod;
+        base = (base * base) % mod;
+        exp /= 2;
     }
-
-    long long chakraPower(long long base, long long power) {
-        long long result = 1;
-        base %= MOD;
-
-        while (power > 0) {
-            if (power % 2 == 1)
-                result = (result * base) % MOD;
-
-            base = (base * base) % MOD;
-            power /= 2;
-        }
-
-        return result;
+    return result;
+}
+    int countGoodNumbers(long long n) {
+        const long long mod = 1e9 + 7;
+        if(n == 1) return 5;
+        long long even_count = (n + 1)/2 ;
+        long long odd_count = (n/2);
+        long long total = (powMod(5, even_count, mod) * powMod(4, odd_count, mod)) % mod;
+        return int(total);
     }
 };
