@@ -1,33 +1,29 @@
 class Solution {
 public:
+    int helper(string &s, int i, int num, int sign){
+        if (i >= s.size() || !isdigit(s[i]))
+            return num * sign;
+
+        int digit = s[i] - '0';
+
+        // check for overflow before multiplying
+        if (num > (INT_MAX - digit) / 10)
+            return (sign == 1) ? INT_MAX : INT_MIN;
+
+        num = num * 10 + digit;
+        return helper(s, i + 1, num, sign);
+    }
+
     int myAtoi(string s) {
-        int i=0, sign=1;
-        long res = 0;
-        // Ignore any leading whitespaces
-        while(i < s.size() && s[i]==' ') i++;
+        int i = 0;
+        while (i < s.size() && s[i] == ' ') i++;
 
-        // Return 0 if only spaces are found
-        if(i == s.size()) return 0;
-
-        // Check for optional sign
-        if(s[i]=='-'){
-            sign = -1;
-            i++;
-        }
-        else if(s[i] == '+') {
+        int sign = 1;
+        if (i < s.size() && (s[i] == '+' || s[i] == '-')) {
+            sign = (s[i] == '+') ? 1 : -1;
             i++;
         }
 
-        while(i<s.size() && isdigit(s[i])){
-            res = res*10 + (s[i]-'0');
-             // Clamp to INT_MAX if overflow occurs
-            if (sign * res > INT_MAX) return INT_MAX;
-
-            // Clamp to INT_MIN if underflow occurs
-            if (sign * res < INT_MIN) return INT_MIN;
-
-            i++;
-        }
-        return (int)(sign*res);  
+        return helper(s, i, 0, sign);
     }
 };
